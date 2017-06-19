@@ -5,8 +5,6 @@ import com.github.mediaserver.util.LogFactory;
 
 import android.app.Application;
 
-
-
 public class ServerApplication  extends Application{
 
 	private static final CommonLog log = LogFactory.createLog();

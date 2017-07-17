@@ -21,7 +21,7 @@ import com.github.mediaserver.util.LogFactory;
 public class DMSService extends Service implements IBaseEngine{
 
 	private static final CommonLog log = LogFactory.createLog();
-	
+
 	public static final String START_SERVER_ENGINE = "com.geniusgithub.start.dmsengine";
 	public static final String RESTART_SERVER_ENGINE = "com.geniusgithub.restart.dmsengine";
 
@@ -30,9 +30,9 @@ public class DMSService extends Service implements IBaseEngine{
 	private Handler mHandler;
 	private static final int START_ENGINE_MSG_ID = 0x0001;
 	private static final int RESTART_ENGINE_MSG_ID = 0x0002;
-	
+
 	private static final int DELAY_TIME = 1000;
-	
+
 	private MediaStoreCenter mMediaStoreCenter;
 	private MulticastLock mMulticastLock;
 	@Override
@@ -42,42 +42,44 @@ public class DMSService extends Service implements IBaseEngine{
 
 	@Override
 	public void onCreate() {
-		super.onCreate();		
-		initService();	
-		log.e("MediaServerService onCreate");
+		super.onCreate();
+		initService();
+		log.d("MediaServerService onCreate");
 	}
 
 	@Override
 	public void onDestroy() {
-		unInitService();	
-		log.e("MediaServerService onDestroy");
+		unInitService();
+		log.d("MediaServerService onDestroy");
 		super.onDestroy();
-	
+
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		
+
+		log.d("MediaServerService onStartCommand");
+
 		if (intent != null){
 			String actionString = intent.getAction();
-			if (actionString != null){		
+			if (actionString != null){
 				if (actionString.equalsIgnoreCase(START_SERVER_ENGINE)){
 					delayToSendStartMsg();
 				}else if (actionString.equalsIgnoreCase(RESTART_SERVER_ENGINE)){
 					delayToSendRestartMsg();
 				}
 			}
-		}	
-	
+		}
+
 		return super.onStartCommand(intent, flags, startId);
-		
+
 	}
-	
-	
+
+
 	private void initService(){
 
 		mWorkThread = new DMSWorkThread(this);
-		
+
 		mHandler = new Handler(){
 			@Override
 			public void handleMessage(Message msg) {
@@ -90,25 +92,25 @@ public class DMSService extends Service implements IBaseEngine{
 					break;
 				}
 			}
-			
+
 		};
-		
+
 		mMediaStoreCenter = MediaStoreCenter.getInstance();
 		mMediaStoreCenter.clearWebFolder();
 		mMediaStoreCenter.createWebFolder();
 		mMediaStoreCenter.doScanMedia();
-		
+
 		mMulticastLock = CommonUtil.openWifiBrocast(this);
 		log.e("openWifiBrocast = "  +  mMulticastLock != null ? true : false);
 	}
 
-	
+
 	private void unInitService(){
 		stopEngine();
 		removeStartMsg();
 		removeRestartMsg();
 		mMediaStoreCenter.clearAllData();
-		
+
 		if (mMulticastLock != null){
 			mMulticastLock.release();
 			mMulticastLock = null;
@@ -120,22 +122,22 @@ public class DMSService extends Service implements IBaseEngine{
 		removeStartMsg();
 		mHandler.sendEmptyMessageDelayed(START_ENGINE_MSG_ID, DELAY_TIME);
 	}
-	
+
 	private void delayToSendRestartMsg(){
 		removeStartMsg();
 		removeRestartMsg();
 		mHandler.sendEmptyMessageDelayed(RESTART_ENGINE_MSG_ID, DELAY_TIME);
 	}
-	
+
 	private void removeStartMsg(){
 		mHandler.removeMessages(START_ENGINE_MSG_ID);
 	}
-	
+
 	private void removeRestartMsg(){
-		mHandler.removeMessages(RESTART_ENGINE_MSG_ID);	
+		mHandler.removeMessages(RESTART_ENGINE_MSG_ID);
 	}
-	
-	
+
+
 	@Override
 	public boolean startEngine() {
 		awakeWorkThread();
@@ -166,15 +168,15 @@ public class DMSService extends Service implements IBaseEngine{
 		String friendName = DlnaUtils.getDevName(this);
 		String uuid = DlnaUtils.creat12BitUUID(this);
 		mWorkThread.setParam(mMediaStoreCenter.getRootDir(), friendName, uuid);
-		
-		
+
+
 		if (mWorkThread.isAlive()){
 			mWorkThread.awakeThread();
 		}else{
 			mWorkThread.start();
 		}
 	}
-	
+
 	private void exitWorkThread(){
 		if (mWorkThread != null && mWorkThread.isAlive()){
 			mWorkThread.exit();

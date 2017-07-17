@@ -2,6 +2,7 @@ package com.github.mediaserver;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -21,8 +22,8 @@ import com.github.mediaserver.util.LogFactory;
  */
 public class MainActivity extends Activity implements OnClickListener, DeviceUpdateBrocastFactory.IDevUpdateListener{
 
-private static final CommonLog log = LogFactory.createLog();
-	
+    private static final CommonLog log = LogFactory.createLog();
+	private static final String TAG = "PLATINUM_DMS";
 	private Button mBtnStart;
 	private Button mBtnReset;
 	private Button mBtnStop;
@@ -40,6 +41,8 @@ private static final CommonLog log = LogFactory.createLog();
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		Log.d(TAG, "DMS oncreate");
 		
 		setupView();
 		initData();
@@ -118,19 +121,23 @@ private static final CommonLog log = LogFactory.createLog();
 	
 	
 	private void start(){
+		Log.d(TAG, "DMS start");
 		mServerProxy.startEngine();
 	}
 	
 	private void reset(){
+		Log.d(TAG, "DMS reset");
 		mServerProxy.restartEngine();
 	}
 	
 	private void stop(){
+		Log.d(TAG, "DMS stop");
 		mServerProxy.stopEngine();
 	}
 	
 	private void change(){
 		if (mETName.isEnabled()){
+			Log.d(TAG, "DMS change");
 			mETName.setEnabled(false);
 			DlnaUtils.setDevName(this, mETName.getText().toString());
 		}else{

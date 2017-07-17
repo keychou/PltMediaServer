@@ -20,7 +20,7 @@ public class LocalConfigSharePreference {
 	
 	public static String getDevName(Context context){
 		SharedPreferences sharedPreferences = context.getSharedPreferences(preference_name, 0);
-		String value = sharedPreferences.getString(dev_name, "geniusgithub");
+		String value = sharedPreferences.getString(dev_name, "dms@evb");
 		return value;
 	}
 	

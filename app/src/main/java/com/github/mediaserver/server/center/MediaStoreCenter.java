@@ -49,9 +49,11 @@ public class MediaStoreCenter implements IMediaScanListener{
 
 	private void initData(){
 		mShareRootPath = mContext.getFilesDir().getAbsolutePath()+"/" + "rootFolder";
+		//mShareRootPath = "/sdcard/Pictures";
 		mImageFolderPath = mShareRootPath + "/" + "Image";
 		mVideoFolderPath = mShareRootPath + "/" + "Video";
 		mAudioFolderPath = mShareRootPath + "/" + "Audio";
+
 		mMediaScannerCenter = MediaScannerCenter.getInstance();
 	}
 	

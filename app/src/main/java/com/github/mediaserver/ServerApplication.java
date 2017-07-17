@@ -20,7 +20,7 @@ public class ServerApplication  extends Application{
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		log.e("ServerApplication onCreate");
+		log.d("ServerApplication onCreate");
 		
 		mInstance = this;
 		mDeviceInfo = new DeviceInfo();
